@@ -1,2 +1,4 @@
+lib
 target
+riak-data-migrator*
 *.swp
