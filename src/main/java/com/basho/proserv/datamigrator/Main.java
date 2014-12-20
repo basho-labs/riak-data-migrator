@@ -1,11 +1,12 @@
 package com.basho.proserv.datamigrator;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Map;
 
-import com.basho.proserv.datamigrator.io.AbstractKeyJournal;
 import com.basho.proserv.datamigrator.io.BucketKeyJournal;
 import com.basho.proserv.datamigrator.io.KeyJournal;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -23,11 +24,22 @@ public class Main {
 		CommandLine cmd = null;
 		try {
 			cmd = parseCommandLine(createOptions(), args);
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			System.out.println("Error parsing command line. Reason: " + e.getMessage());
 			System.exit(1);
 		}
 		
+		// Handle Menu / Common Options
+		if (cmd.hasOption("help")) {
+			printHelp();
+			System.exit(0);
+		}
+
+		if (cmd.hasOption("version")) {
+			printVersion();
+			System.exit(0);
+		}
 		
 		// Handle exclusive options
 		int cmdCount = 0;
@@ -48,7 +60,6 @@ public class Main {
 			++cmdCount;
 		}
 		
-		
 		if (cmdCount == 0) {
 			System.out.println("You must specify l, d, k, copy, or delete");
 			System.exit(1);
@@ -57,6 +68,8 @@ public class Main {
 			System.out.println("Load (l), Dump (d), Keys (k), Copy (copy), and Delete (delete) are exclusive options.");
 			System.exit(1);
 		}
+		
+		// Option Rules
 		
 		if (cmd.hasOption('k') && cmd.hasOption('t')) {
 			System.out.println("Keys (k) and Bucket Properties (t) are exclusive options.");
@@ -86,9 +99,6 @@ public class Main {
             System.exit(1);
         }
 
-//        if ((cmd.hasOption("loadkeys") || cmd.hasOption("bucketkeys")) && !cmd.hasOption("r")) {
-//            System.out.println("loadkeys and bucketkeys require an output directory (r option)");
-//        }
         if ((cmd.hasOption("loadkeys") || cmd.hasOption("bucketkeys")) && cmd.hasOption("l")) {
             System.out.println("loadkeys and bucketkeys cannot be used with the load (l) option");
         }
@@ -97,6 +107,8 @@ public class Main {
                 !(cmd.hasOption("d") || cmd.hasOption("copy") | cmd.hasOption("delete"))) {
             System.out.println("loadkeys and bucketkeys must be used with dump, copy, or delete options (d, copy, delete");
         }
+        
+        // Execution
 		
 		Configuration config = handleCommandLine(cmd);
 		
@@ -135,11 +147,6 @@ public class Main {
 				System.exit(1);
 			}
 		}
-		
-		// Not available
-//		if (cmd.hasOption("R")) {
-//			config.setResume(true);
-//		}
 		
 		// Host
 		if (cmd.hasOption("h")) {
@@ -528,10 +535,24 @@ public class Main {
 		
 	}
 	
-	public static void printHelp(String arg) {
+	public static void printHelp() {
 		Options options = createOptions();
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp(arg, options);
+		formatter.printHelp("riak-data-migrator", options);
+	}
+	
+	public static void printVersion() {
+		String vendor = Main.class.getPackage().getSpecificationVendor();
+    	String version = Main.class.getPackage().getSpecificationVersion();
+    	// set defaults if they are not.
+    	if (vendor == null || vendor.length() <=0)
+    		vendor = "Basho Professional Services <proserv@basho.com>";
+    	if (version == null || version.length() <=0)
+    		version = "DEVELOPMENT";
+    	PrintStream out = System.out;
+    	String line_separator = System.getProperty("line.separator", "\n");
+    	out.printf("%s version \"%s\"%s", "riak-data-migrator", version , line_separator);
+    	out.printf("provided by \"%s\"%s", vendor, line_separator);
 	}
 	
 	private static void printSummary(Summary summary, String title) {
@@ -602,9 +623,10 @@ public class Main {
 	private static Options createOptions() {
 		Options options = new Options();
 		
+		options.addOption("help", false, "show this help message");
+		options.addOption("version", false, "print the application version");
 		options.addOption("l", false, "Set to Load buckets. Cannot be used with d, k");
 		options.addOption("d", false, "Set to Dump buckets. Cannot be used with l, k");
-		options.addOption("R", false, "Configure tool to resume previous operation");
 		options.addOption("r", true, "Set the path for data to be loaded to or dumped from. Required.");
 		options.addOption("a", false, "Load or Dump all buckets");
 		options.addOption("b", true, "Load or Dump a single bucket");

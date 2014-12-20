@@ -4,6 +4,7 @@
   <artifactId>riak-data-migrator</artifactId>
   <packaging>jar</packaging>
   <name>Riak Data Migrator</name>
+  <version>0.2.7</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,6 +55,11 @@
   					</manifest>
 			        <manifestEntries>
 			            <Class-Path>conf/</Class-Path>
+			            <Specification-Version>${project.version}</Specification-Version>
+			            <Specification-Vendor>Basho Professional Services</Specification-Vendor>
+			            <Implementation-Vendor>Basho Professional Services</Implementation-Vendor>
+			            <Implementation-URL>http://basho.com</Implementation-URL>
+			            <Implementation-Vendor-Id>http://basho.com</Implementation-Vendor-Id>
 			        </manifestEntries>
   				</archive>
   			</configuration>
@@ -102,5 +108,4 @@
   		<version>1.0.9</version>
   	</dependency>
   </dependencies>
-  <version>0.2.6</version>
 </project>
