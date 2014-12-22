@@ -55,7 +55,10 @@ public class Configuration {
 	private int riakWorkerCount = Runtime.getRuntime().availableProcessors() * RIAK_WORKER_MULTIPLIER;
 	private int maxRiakConnections = riakWorkerCount * RIAK_CLUSTER_CONNECTION_MULTIPLIER;
 	
-	private String destinationBucket = null; 
+	private String destinationBucket = null;
+	
+	private boolean decodingEnabled = true;
+	private boolean encodingEnabled = true;
 	
 	public void setMode(Mode mode) {
 		this.mode = mode;
@@ -129,10 +132,27 @@ public class Configuration {
 	public void setDestinationBucket(String destinationBucket) {
 		this.destinationBucket = destinationBucket;
 	}
+
 	public String getDestinationBucket() {
 		return this.destinationBucket;
 	}
-	
+
+	public boolean getEncodingEnabled() {
+		return this.encodingEnabled;
+	}
+
+	public boolean getDecodingEnabled() {
+		return this.decodingEnabled;
+	}
+
+	public void setEncodingEnabled(boolean enabled) {
+		this.encodingEnabled = enabled;
+	}
+
+	public void setDecodingEnabled(boolean enabled) {
+		this.decodingEnabled = enabled;
+	}
+
 	public void setQueueSize(int queueSize) {
 		this.queueSize = queueSize;
 	}

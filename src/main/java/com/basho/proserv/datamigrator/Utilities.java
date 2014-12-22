@@ -1,6 +1,5 @@
 package com.basho.proserv.datamigrator;
 
-import com.basho.proserv.datamigrator.io.AbstractKeyJournal;
 import com.basho.proserv.datamigrator.io.IKeyJournal;
 import com.basho.proserv.datamigrator.io.Key;
 import com.basho.proserv.datamigrator.io.KeyJournal;
@@ -11,13 +10,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Utilities {
     public static Map<String, KeyJournal> splitKeys(File basePath, IKeyJournal keyJournal) {
         Map<String, KeyJournal> journals = new HashMap<String, KeyJournal>();
         Map<String, KeyJournal> readJournals = new HashMap<String, KeyJournal>();
-
 
         try {
             for (Key key : keyJournal) {
@@ -66,18 +69,34 @@ public class Utilities {
 		return set;
 	}
 	
+	public static boolean isEncodingDisabled() {
+		return !Main.getConfig().getEncodingEnabled();
+	}
+	
+	public static boolean isDecodingDisabled() {
+		return !Main.getConfig().getDecodingEnabled();
+	}
+
 	public static String urlEncode(String input) {
+		if (isEncodingDisabled()) {
+			return input;
+		}
 		try {
 			return java.net.URLEncoder.encode(input, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			return input;
 		}
 	}
 	
 	public static String urlDecode(String input) {
+		if (isDecodingDisabled()) {
+			return input;
+		}
 		try {
 			return java.net.URLDecoder.decode(input, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			return input;
 		}
 	}

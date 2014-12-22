@@ -19,6 +19,12 @@ import org.slf4j.LoggerFactory;
 import com.basho.proserv.datamigrator.riak.Connection;
 
 public class Main {
+	
+	private static Configuration config = null;
+	
+	public static Configuration getConfig() {
+		return config;
+	}
 
 	public static void main(String[] args) {
 		CommandLine cmd = null;
@@ -43,7 +49,6 @@ public class Main {
 		
 		// Handle exclusive options
 		int cmdCount = 0;
-		
 		if (cmd.hasOption("l")) {
 			++cmdCount;
 		}
@@ -69,8 +74,7 @@ public class Main {
 			System.exit(1);
 		}
 		
-		// Option Rules
-		
+		// Option Rules		
 		if (cmd.hasOption('k') && cmd.hasOption('t')) {
 			System.out.println("Keys (k) and Bucket Properties (t) are exclusive options.");
 			System.exit(1);
@@ -109,8 +113,7 @@ public class Main {
         }
         
         // Execution
-		
-		Configuration config = handleCommandLine(cmd);
+		config = handleCommandLine(cmd);
 		
 		if (cmd.hasOption("delete")) {
 			runDelete(config);
@@ -130,7 +133,7 @@ public class Main {
 
 	}
 	
-	public static Configuration handleCommandLine(CommandLine cmd) {
+	private static Configuration handleCommandLine(CommandLine cmd) {
 		Configuration config = new Configuration();
 		
 		// Data path
@@ -369,10 +372,18 @@ public class Main {
 				System.exit(1);
 			}
 		}
+		
+		if (cmd.hasOption("disable_decoding")) {
+			config.setDecodingEnabled(false);
+		}
+		
+		if (cmd.hasOption("disable_encoding")) {
+			config.setEncodingEnabled(false);
+		}
 		return config;
 	}
 
-	public static void runDelete(Configuration config) {
+	private static void runDelete(Configuration config) {
 		Connection connection = new Connection(config.getMaxRiakConnections());
 		
 		if (config.getHosts().size() == 1) {
@@ -402,7 +413,7 @@ public class Main {
 		printSummary(deleter.summary, "Load Summary:");
 	}
 	
-	public static void runLoader(Configuration config) {
+	private static void runLoader(Configuration config) {
 		Connection connection = new Connection(config.getMaxRiakConnections());
 		Connection httpConnection = new Connection();
 		
@@ -442,7 +453,7 @@ public class Main {
 		printSummary(loader.summary, "Load Summary:");
 	}
 	
-	public static void runDumper(Configuration config) {
+	private static void runDumper(Configuration config) {
 		Connection connection = new Connection(config.getMaxRiakConnections());
 		Connection httpConnection = new Connection();
 		
@@ -535,13 +546,13 @@ public class Main {
 		
 	}
 	
-	public static void printHelp() {
+	private static void printHelp() {
 		Options options = createOptions();
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("riak-data-migrator", options);
 	}
 	
-	public static void printVersion() {
+	private static void printVersion() {
 		String vendor = Main.class.getPackage().getSpecificationVendor();
     	String version = Main.class.getPackage().getSpecificationVersion();
     	// set defaults if they are not.
@@ -647,11 +658,12 @@ public class Main {
 		options.addOption("copyhostsfile", true, "Specify file containing destination cluster hosts");
 		options.addOption("copypbport", true, "Copy destination protocol buffers port");
 		options.addOption("destinationbucket", true, "Destination Bucket name for single bucket copy");
-//		options.addOption("j", true, "Resume based on previously written keys");
 		options.addOption("resetvclock", false, "Resets object's VClock prior to being loaded in Riak");
 		options.addOption("riakworkercount", true, "Specify Riak Worker Count");
 		options.addOption("maxriakconnections", true, "Specify the max number of connections maintained in the Riak Connection Pool");
 		options.addOption("delete", false, "Delete specified buckets");
+		options.addOption("disable_decoding", false, "Disable URL Decoding for migrator input");
+		options.addOption("disable_encoding", false, "Disable URL Encoding for migrator output");
 		return options;
 	}
 	
