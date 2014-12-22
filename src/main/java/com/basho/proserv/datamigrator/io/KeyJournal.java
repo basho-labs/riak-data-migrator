@@ -11,8 +11,5 @@ public class KeyJournal extends AbstractKeyJournal {
 	
 	public KeyJournal(File path, Mode mode) {
         super(path, mode);
-
 	}
-
-	
 }
