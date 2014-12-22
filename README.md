@@ -49,13 +49,13 @@ To transfer data from one Riak cluster to another:
 Downloading:
 ------------------------
 You can download the ready to run jar file at:
-http://ps-tools.data.riakcs.net:8080/riak-data-migrator-0.2.6-bin.tar.gz
+https://s3-us-west-2.amazonaws.com/ps-tools/riak-data-migrator-0.2.7-bin.tar.gz
 
 After downloading, unzip/untar it, and it's ready to run from its directory.
 ```bash
-tar -xvzf riak-data-migrator-0.2.6-bin.tar.gz
-cd riak-data-migrator-0.2.6
-java -jar riak-data-migrator-0.2.6.jar [options]
+tar -xvzf riak-data-migrator-0.2.7-bin.tar.gz
+cd riak-data-migrator-0.2.7
+java -jar riak-data-migrator-0.2.7.jar [options]
 ```
 
 Building from source:
@@ -70,13 +70,13 @@ mvn package
 ```
 
     The compiled .jar file is located in the ```target/``` directory.
-    The usable binary file is ```riak-data-migrator-0.2.6-bin.tar.gz```
+    The usable binary file is ```riak-data-migrator-0.2.7-bin.tar.gz```
 
 Usage:
 ------------------------
 Usage:  
 
-```java -jar riak-data-migrator-0.2.6.jar [options]```
+```java -jar riak-data-migrator-0.2.7.jar [options]```
 
 Options:
 
@@ -138,64 +138,64 @@ Examples:
 Dump (the contents of) all buckets from Riak:  
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -d -r /var/riak_export -a -h 127.0.0.1 -p 8087 -H 8098
+java -jar riak-data-migrator-0.2.7.jar -d -r /var/riak_export -a -h 127.0.0.1 -p 8087 -H 8098
 ```
 
 Dump a subset of keys from Riak:
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -d -r /var/riak_export --loadkeys bucketKeyNameFile.txt -h 127.0.0.1 -p 8087 -H 8098
+java -jar riak-data-migrator-0.2.7.jar -d -r /var/riak_export --loadkeys bucketKeyNameFile.txt -h 127.0.0.1 -p 8087 -H 8098
 ```
 
 Load all buckets previously dumped back into Riak:  
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -l -r /var/riak-export -a -h 127.0.0.1 -p 8087 -H 8098
+java -jar riak-data-migrator-0.2.7.jar -l -r /var/riak-export -a -h 127.0.0.1 -p 8087 -H 8098
 ```
 
 Dump (the contents of) buckets listed in a line delimited file from a Riak cluster:  
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -d -f /home/riakadmin/buckets_to_export.txt -r \
+java -jar riak-data-migrator-0.2.7.jar -d -f /home/riakadmin/buckets_to_export.txt -r \
 /var/riak-export -c /home/riakadmin/riak_hosts.txt -p 8087 -H 8098
 ```
 
 Dump (then contents of) buckets based on the bucket,keys listed in a file, bucket_keys.csv:
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -d --loadkeys bucket_keys.txt -r \
+java -jar riak-data-migrator-0.2.7.jar -d --loadkeys bucket_keys.txt -r \
 /var/riak-export -c /home/riakadmin/riak_hosts.txt -p 8087 -H 8098
 ```
 
 Dump (then contents of) a single bucket, A_BUCKET, based on the keys listed in a file, keys.txt:
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -d -b A_BUCKET --bucketkeys keys.txt -r \
+java -jar riak-data-migrator-0.2.7.jar -d -b A_BUCKET --bucketkeys keys.txt -r \
 /var/riak-export -c /home/riakadmin/riak_hosts.txt -p 8087 -H 8098
 ```
 
 Export only the bucket settings from a bucket named "Flights":  
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -d -t -r /var/riak-export -b Flights -h 127.0.0.1 -p 8087 -H 8098
+java -jar riak-data-migrator-0.2.7.jar -d -t -r /var/riak-export -b Flights -h 127.0.0.1 -p 8087 -H 8098
 ```
 
 Load bucket settings for a bucket named "Flights":  
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -l -t -r /var/riak-export -b Flights -h 127.0.0.1 -p 8087 -H 8098
+java -jar riak-data-migrator-0.2.7.jar -l -t -r /var/riak-export -b Flights -h 127.0.0.1 -p 8087 -H 8098
 ```
 
 Copy all buckets from one riak host to another:
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -copy -r /var/riak_export -a -h 127.0.0.1 -p 8087 --copyhost 192.168.1.100 --copypbport 8087
+java -jar riak-data-migrator-0.2.7.jar -copy -r /var/riak_export -a -h 127.0.0.1 -p 8087 --copyhost 192.168.1.100 --copypbport 8087
 ```
 
 Copy a single bucket (A_BUCKET) to bucket (B_BUCKET) on the same host
 
 ```
-java -jar riak-data-migrator-0.2.6.jar -copy -r /var/riak_export -b A_BUCKET -h 127.0.0.1 -p 8087 --copyhost 192.168.1.100 --copypbport 8087 --destinationbucket B_BUCKET
+java -jar riak-data-migrator-0.2.7.jar -copy -r /var/riak_export -b A_BUCKET -h 127.0.0.1 -p 8087 --copyhost 192.168.1.100 --copypbport 8087 --destinationbucket B_BUCKET
 ```
 
 
@@ -212,6 +212,11 @@ option to specify a line-delimited list of buckets in a file.
 
 Version Notes:
 ------------------------
+0.2.7
+ - Added a more comprehensive help menu.
+ - Added a version option to display the data migrator version.
+ - Added two options to disable URL encoding and decoding if needed.
+
 0.2.6
  - Subset of keys can now be dumped, copied, or deleted.
  - In addition to previous capability to specify a file in bucket,key\n format, you can now just have a file with keys
