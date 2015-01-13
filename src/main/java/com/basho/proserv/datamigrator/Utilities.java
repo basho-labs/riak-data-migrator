@@ -18,6 +18,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class Utilities {
+	public static File makeDirs(String path) {
+		File f = new File(path);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		return f;
+	}
+	
     public static Map<String, KeyJournal> splitKeys(File basePath, IKeyJournal keyJournal) {
         Map<String, KeyJournal> journals = new HashMap<String, KeyJournal>();
         Map<String, KeyJournal> readJournals = new HashMap<String, KeyJournal>();
@@ -26,7 +34,7 @@ public class Utilities {
             for (Key key : keyJournal) {
                 String bucketName = key.bucket();
                 if (!journals.containsKey(bucketName)) {
-                    File bucketPath = new File(basePath.getAbsolutePath() + "/" + Utilities.urlEncode(bucketName));
+                    File bucketPath = new File(basePath.getAbsolutePath() + "/" + Utilities.urlEncode(bucketName, true));
                     bucketPath.mkdir();
                     File keyFile = new File(bucketPath.getAbsolutePath() + "/bucketkeys.keys");
                     journals.put(key.bucket(), new KeyJournal(keyFile, KeyJournal.Mode.WRITE));
@@ -37,7 +45,7 @@ public class Utilities {
 
             for (String bucketName: journals.keySet()) {
                 journals.get(bucketName).close();
-                File bucketKeys = new File(basePath.getAbsolutePath() + "/" + Utilities.urlEncode(bucketName) + "/" + "bucketkeys.keys");
+                File bucketKeys = new File(basePath.getAbsolutePath() + "/" + Utilities.urlEncode(bucketName, true) + "/" + "bucketkeys.keys");
                 readJournals.put(bucketName, new KeyJournal(bucketKeys, KeyJournal.Mode.READ));
             }
         } catch (IOException ex) {
@@ -77,8 +85,8 @@ public class Utilities {
 		return !Main.getConfig().getDecodingEnabled();
 	}
 
-	public static String urlEncode(String input) {
-		if (isEncodingDisabled()) {
+	public static String urlEncode(String input, boolean ignoreConfig) {
+		if (isEncodingDisabled() && !ignoreConfig) {
 			return input;
 		}
 		try {
@@ -89,8 +97,8 @@ public class Utilities {
 		}
 	}
 	
-	public static String urlDecode(String input) {
-		if (isDecodingDisabled()) {
+	public static String urlDecode(String input, boolean ignoreConfig) {
+		if (isDecodingDisabled() && !ignoreConfig) {
 			return input;
 		}
 		try {
@@ -99,6 +107,14 @@ public class Utilities {
 		catch (UnsupportedEncodingException e) {
 			return input;
 		}
+	}
+
+	public static String urlEncode(String input) {
+		return urlEncode(input, false);
+	}
+	
+	public static String urlDecode(String input) {
+		return urlDecode(input, false);
 	}
 
     public static List<String> urlDecode(Iterable<String> lines) {
