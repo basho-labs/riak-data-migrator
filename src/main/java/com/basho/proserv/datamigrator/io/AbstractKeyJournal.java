@@ -45,8 +45,9 @@ public abstract class AbstractKeyJournal implements Iterable<Key>, IKeyJournal {
                 this.keyCount = -1;
                 this.writer = null;
             }
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Could not open " + path.getAbsolutePath());
+        }
+        catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("Could not open " + path.getAbsolutePath(), e);
         }
 
         this.mode = mode;

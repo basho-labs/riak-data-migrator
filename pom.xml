@@ -4,7 +4,7 @@
   <artifactId>riak-data-migrator</artifactId>
   <packaging>jar</packaging>
   <name>Riak Data Migrator</name>
-  <version>0.2.7</version>
+  <version>0.2.8</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

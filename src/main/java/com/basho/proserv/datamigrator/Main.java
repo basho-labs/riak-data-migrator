@@ -115,6 +115,40 @@ public class Main {
         // Execution
 		config = handleCommandLine(cmd);
 		
+		// Dump from a list of buckets/keys
+		if (cmd.hasOption("loadkeys")) {
+			try {
+				String fileName = cmd.getOptionValue("loadkeys");
+                File path = new File(fileName);
+
+                KeyJournal keyJournal = new KeyJournal(path, KeyJournal.Mode.READ);
+                config.setKeyJournal(keyJournal);
+                config.setOperation(Configuration.Operation.KEYS);
+//				config.addKeyNames(Utilities.readFileLines(fileName));
+			}
+			catch (Exception e) {
+				System.out.println("Could not read file containing list of bucket,keys");
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+        if (cmd.hasOption("bucketkeys")) {
+            if (config.getBucketNames().size() == 1) {
+                String fileName = cmd.getOptionValue("bucketkeys");
+                File path = new File(fileName);
+                String bucketName = config.getBucketNames().iterator().next();
+                BucketKeyJournal keyJournal = new BucketKeyJournal(path, KeyJournal.Mode.READ, bucketName);
+
+                config.setKeyJournal(keyJournal);
+                config.setOperation(Configuration.Operation.KEYS);
+            }
+            else {
+                System.out.println("bucketkeys only a valid option when specifying a single bucket");
+                System.exit(1);
+            }
+        }
+		
 		if (cmd.hasOption("delete")) {
 			runDelete(config);
 		}
@@ -139,11 +173,7 @@ public class Main {
 		// Data path
 		if (!cmd.hasOption("copy") && !cmd.hasOption("delete")) {
 			if (cmd.hasOption("r")) {
-				File dataPath = new File(cmd.getOptionValue("r"));
-				if (!dataPath.exists()) {
-					System.out.println("Data path " + dataPath.getAbsolutePath() + " does not exist.");
-					System.exit(1);
-				}
+				File dataPath = Utilities.makeDirs(cmd.getOptionValue("r"));
 				config.setFilePath(dataPath);
 			} else {
 				System.out.println("Data path was not specified.");
@@ -186,7 +216,6 @@ public class Main {
 			System.out.println("No destination hosts specified");;
 			System.exit(1);
 		}
-		
 		
 		// PB port
 		if (cmd.hasOption("p")) {
@@ -239,42 +268,6 @@ public class Main {
 				System.exit(1);
 			}
 		}
-
-		// Dump from a list of buckets/keys
-		if (cmd.hasOption("loadkeys")) {
-			try {
-				String fileName = cmd.getOptionValue("loadkeys");
-                File path = new File(fileName);
-
-                KeyJournal keyJournal = new KeyJournal(path, KeyJournal.Mode.READ);
-
-                config.setKeyJournal(keyJournal);
-
-                config.setOperation(Configuration.Operation.KEYS);
-
-//				config.addKeyNames(Utilities.readFileLines(fileName));
-			} catch (Exception e) {
-				System.out.println("Could not read file containing list of bucket,keys");
-				System.exit(1);
-			}
-		}
-
-        if (cmd.hasOption("bucketkeys")) {
-
-            if (config.getBucketNames().size() == 1) {
-                String fileName = cmd.getOptionValue("bucketkeys");
-                File path = new File(fileName);
-                String bucketName = config.getBucketNames().iterator().next();
-                BucketKeyJournal keyJournal = new BucketKeyJournal(path, KeyJournal.Mode.READ, bucketName);
-
-                config.setKeyJournal(keyJournal);
-
-                config.setOperation(Configuration.Operation.KEYS);
-            } else {
-                System.out.println("bucketkeys only a valid option when specifying a single bucket");
-                System.exit(1);
-            }
-        }
 
 		// Keys only
 		if (cmd.hasOption("k")) { // if keys only....

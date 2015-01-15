@@ -176,9 +176,7 @@ public class BucketLoader {
 	}
 
 	public String createBucketPath(String bucketName, boolean urlEncode) {
-		if (urlEncode) {
-			bucketName = Utilities.urlEncode(bucketName);
-		}
+		bucketName = Utilities.urlEncode(bucketName, urlEncode);
 		String fullPathname = this.dataRoot.getAbsolutePath() + "/" + bucketName;
 		return fullPathname;
 	}

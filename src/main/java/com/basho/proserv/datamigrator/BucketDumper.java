@@ -61,10 +61,7 @@ public class BucketDumper {
 			if (this.verboseStatusOutput) {
 				System.out.println("Saving bucket properties for " + bucketName);
 			}
-			File path = new File(this.createBucketPath(bucketName));
-			if (!path.exists()) {
-				path.mkdir();
-			}
+			File path = Utilities.makeDirs(this.createBucketPath(bucketName, true));
 			this.saveBucketSettings(bucketName, path);
 			++ count;
 		}
@@ -265,13 +262,13 @@ public class BucketDumper {
 		}
 	}
 	
-	private String createBucketPath(String bucketName) {
-		String encodedBucketName = Utilities.urlEncode(bucketName);
+	private String createBucketPath(String bucketName, boolean alwaysEncode) {
+		String encodedBucketName = Utilities.urlEncode(bucketName, alwaysEncode);
 		return this.dataRoot.getAbsolutePath() + "/" + encodedBucketName;
 	}
 
 	private RiakObjectBucket createBucket(String bucketName) {
-		String bucketRootPath = this.createBucketPath(bucketName);
+		String bucketRootPath = this.createBucketPath(bucketName, true);
 		File bucketRoot = new File(bucketRootPath);
 		return new RiakObjectBucket(bucketRoot, RiakObjectBucket.BucketMode.WRITE, this.config);
 	}
