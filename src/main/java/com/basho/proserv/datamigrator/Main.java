@@ -255,7 +255,7 @@ public class Main {
 		
 		// Single bucket specifier
 		if (cmd.hasOption("b")) {
-			config.addBucketName(Utilities.urlDecode(cmd.getOptionValue("b")));
+			config.addBucketName(cmd.getOptionValue("b"));
 			config.setOperation(Configuration.Operation.BUCKETS);
 		}
 		// Bucket filename
